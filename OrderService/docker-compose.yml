@@ -1,0 +1,28 @@
+version: '3'
+services:
+  order_api:
+    container_name: order_api
+    build: ./orderapi
+    command: uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+    ports:
+      - 8002:8000
+    env_file:
+      ./.env
+    depends_on:
+      - order_db
+  order_db:
+    image: mongo:latest
+    container_name: order_db
+    env_file:
+      - ./.env
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
+    volumes:
+      - mongo:/data/db
+    ports:
+      - '6000:27017'
+
+volumes:
+  mongo:

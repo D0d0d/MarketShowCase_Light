@@ -1,0 +1,32 @@
+version: '3'
+services:
+  inventory_api:
+    container_name: inventory_api
+    build: ./inventoryapi
+    command: uvicorn app.main:app --reload --host 0.0.0.0 --port 8000 && alembic revision --autogenerate -m "format" && alembic upgrade head
+    ports:
+      - 8000:8000
+    env_file:
+      ./.env
+    depends_on:
+      - inventory_db
+    networks:
+      - mynetwork
+  inventory_db:
+    image: postgres
+    container_name: inventory_db
+    expose:
+      - 5433
+    restart: always
+    env_file:
+      - ./.env
+    volumes:
+      - postgres-db:/var/lib/postgresql/data
+    networks:
+      - mynetwork
+networks:
+  mynetwork:
+    external: true
+    name: mynetwork
+volumes:
+  postgres-db:
