@@ -1,0 +1,3 @@
+[submodule "FastAPI-Alembic_PostreSQL--DockerCompose-Separated-"]
+	path = FastAPI-Alembic_PostreSQL--DockerCompose-Separated-
+	url = https://github.com/D0d0d/FastAPI-Alembic_PostreSQL--DockerCompose-Separated-
