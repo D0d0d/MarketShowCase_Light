@@ -1,9 +1,0 @@
-version: '3'
-services:
-  apps:
-    build:
-      context: ./
-      dockerfile: DockerFile
-    container_name: apps
-    env_file:
-      - .env
