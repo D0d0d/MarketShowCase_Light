@@ -3,7 +3,7 @@ from datetime import datetime
 
 
 class MessageBaseMdoel(BaseModel):
-    name: StrictStr
+    text: StrictStr
     message_id: StrictStr | None = " "
     topic: StrictStr    | None = None
     timestamp: datetime | None = None

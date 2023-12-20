@@ -3,6 +3,7 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     INV_LINK: str
+    NOTIFICATION_LINK: str
     DATABASE_URL: str
     MONGO_INITDB_DATABASE: str
     MONGO_INITDB_ROOT_PASSWORD: str

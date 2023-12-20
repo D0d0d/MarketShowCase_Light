@@ -38,6 +38,7 @@ def get_orders(limit: int = 10, page: int = 1, search: str = datetime(1, 1, 1)):
 @router.post('/', status_code=status.HTTP_201_CREATED, response_model=schemas.EmbedOrderResponse)
 def create_order(payload: schemas.OrderCreateSchema):
     payload.date = payload.date if payload.date else datetime.utcnow()
+    verifier = Verifier()
     try:
         productItems = payload.productItems
         order = payload.dict()
@@ -47,8 +48,6 @@ def create_order(payload: schemas.OrderCreateSchema):
         products = []
         for item in productItems:
             product = item.dict()
-            
-            verifier = Verifier()
             res = None
             try:
                 res = verifier.check_item(verifier._item(product['uuid'], product['amount']))
@@ -58,9 +57,6 @@ def create_order(payload: schemas.OrderCreateSchema):
 
             product['price'] = res['price']
             products.append(product)
-
-                
-
             result = Orders.insert_one(order)
             new_order = Orders.find_one({'_id': result.inserted_id})  
             for p in products:
@@ -68,6 +64,7 @@ def create_order(payload: schemas.OrderCreateSchema):
                 product_res = ProductItems.insert_one(p)
                 new_ProductItems.append(ProductItems.find_one({'_id': product_res.inserted_id}))
         new_order["productItems"] = new_ProductItems
+        verifier.notify(topic="cons1", text="new order "+new_order["_id"])
         return {"status": "success", "order": orderCreateEntity(new_order)}
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT,
