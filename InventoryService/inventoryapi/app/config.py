@@ -1,4 +1,7 @@
 from pydantic_settings import BaseSettings
+from dotenv import find_dotenv, load_dotenv
+
+load_dotenv(find_dotenv(".env"))
 
 
 class Settings(BaseSettings):
@@ -16,9 +19,6 @@ class Settings(BaseSettings):
     JWT_ALGORITHM: str
 
     CLIENT_ORIGIN: str
-
-    class Config:
-        env_file = '././.env'
 
 
 settings = Settings()
