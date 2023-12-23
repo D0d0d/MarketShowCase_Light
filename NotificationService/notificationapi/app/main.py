@@ -1,9 +1,19 @@
 from .producers import router as producer
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from . import env
+from contextlib import asynccontextmanager
+import asyncio
 
-app = FastAPI()
+loop = asyncio.get_event_loop()
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    app.state.loop = loop
+    yield
+
+
+app = FastAPI(lifespan=lifespan)
 
 origins = [
     "http://localhost:3000",
@@ -16,29 +26,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
-@app.on_event("startup")
-async def startup_event():
-    prods = []
-    cons = []
-    try:
-        for aioproducer in env.aioproducers:
-            await aioproducer.start()
-            prods.append[aioproducer]
-        for consumer in env.consumers:
-            env.loop.create_task(consumer["consume"](consumer["consumer"]))
-            cons.append[consumer["consumer"]]
-    except Exception:
-        await shutdown_event()
-
-
-@app.on_event("shutdown")
-async def shutdown_event():
-    for aioproducer in env.aioproducers:
-        await aioproducer.stop()
-    for consumer in env.consumers:
-        await consumer["consumer"].stop()
 
 
 app.include_router(producer.router, tags=['producer'], prefix='/api/produce')

@@ -1,21 +1,22 @@
-from datetime import datetime
-import uuid
 from .. import schemas, models
 from sqlalchemy.orm import Session
 from fastapi import Depends, HTTPException, status, APIRouter, Response
 from ..database import get_db
-from base64 import b64encode
 
 router = APIRouter()
 
 
 @router.get('/', response_model=schemas.ListInventory)
-def get_inventory(db: Session = Depends(get_db), limit: int = 10, page: int = 1,
+def get_inventory(db: Session = Depends(get_db), limit: int = 10,
+                  page: int = 1,
                   search: str = ''):
     skip = (page - 1) * limit
 
-    inventory = db.query(models.Inventory).group_by(models.Inventory.id).filter(
-        models.Inventory.name.contains(search)).limit(limit).offset(skip).all()
+    inventory = db.query(
+        models.Inventory).group_by(
+            models.Inventory.id).filter(
+                models.Inventory.name.contains(search)).limit(
+                    limit).offset(skip).all()
     return {'status': 'success', 'results': len(inventory),
             'Inventory': inventory}
 
@@ -23,7 +24,7 @@ def get_inventory(db: Session = Depends(get_db), limit: int = 10, page: int = 1,
 @router.post('/', status_code=status.HTTP_201_CREATED,
              response_model=schemas.InventoryResponse)
 def create_inventory(inventory: schemas.CreateInventory,
-                   db: Session = Depends(get_db)):
+                     db: Session = Depends(get_db)):
     new_inventory = models.Inventory(**inventory.dict())
     db.add(new_inventory)
     db.commit()
@@ -33,8 +34,9 @@ def create_inventory(inventory: schemas.CreateInventory,
 
 @router.put('/{id}', response_model=schemas.InventoryResponse)
 def reserve_inventory(id: str, inventory: schemas.UpdateInventory,
-                   db: Session = Depends(get_db)):
-    inventory_query = db.query(models.Inventory).filter(models.Inventory.id == id)
+                      db: Session = Depends(get_db)):
+    inventory_query = db.query(models.Inventory).filter(
+        models.Inventory.id == id)
     updated_inventory = inventory_query.first()
 
     if not updated_inventory:
@@ -67,7 +69,8 @@ def update_inventory(id: str, reserve: int = 0,
 
 @router.get('/{id}', response_model=schemas.InventoryResponse)
 def get_inventory_id(id: str, db: Session = Depends(get_db)):
-    inventory = db.query(models.Inventory).filter(models.Inventory.id == id).first()
+    inventory = db.query(models.Inventory).filter(
+        models.Inventory.id == id).first()
     if not inventory:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"No inventory with this id: {id} found")
@@ -76,7 +79,8 @@ def get_inventory_id(id: str, db: Session = Depends(get_db)):
 
 @router.delete('/{id}')
 def delete_inventory(id: str, db: Session = Depends(get_db)):
-    inventory_query = db.query(models.Inventory).filter(models.Inventory.id == id)
+    inventory_query = db.query(models.Inventory).filter(
+        models.Inventory.id == id)
     inventory = inventory_query.first()
     if not inventory:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,

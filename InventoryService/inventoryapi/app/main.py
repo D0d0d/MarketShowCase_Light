@@ -18,7 +18,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(inventory.router, tags=['Inventory'], prefix='/api/inventory')
+app.include_router(inventory.router, tags=['Inventory'],
+                   prefix='/api/inventory')
 
 
 @app.get('/api/inventoryService')

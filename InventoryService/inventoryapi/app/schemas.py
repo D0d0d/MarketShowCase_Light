@@ -8,6 +8,7 @@ class InventoryBase(BaseModel):
     amount: int
     price: float
     reserved: int | None = 0
+
     class Config:
         orm_mode = True
 
@@ -27,9 +28,7 @@ class UpdateInventory(BaseModel):
     reserved: int | None = 0
 
 
-
 class ListInventory(BaseModel):
     status: str
     results: int
     Inventory: List[InventoryResponse]
-
