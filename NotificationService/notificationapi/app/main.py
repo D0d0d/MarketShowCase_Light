@@ -15,7 +15,6 @@ aioconsumer = AIOKafkaConsumer(
         auto_commit_interval_ms=1000,
         value_deserializer=lambda x: json.loads(x.decode('utf-8')),
         loop=loop)
-
 aioproducer = AIOKafkaProducer(
         loop=loop,
         bootstrap_servers=settings.KAFKA_INSTANCE)
@@ -32,13 +31,8 @@ async def lifespan(app: FastAPI):
     await app.state.producer.stop()
     await app.state.consumer.stop()
 
-
 app = FastAPI(lifespan=lifespan)
-
-origins = [
-    "http://localhost:3000",
-]
-
+origins = ["http://localhost:3000",]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -46,8 +40,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
 app.include_router(producer.router, tags=['producer'], prefix='/api/produce')
 
 

@@ -11,14 +11,19 @@ class Verifier:
         return {"id": id, "amount": str(amount)}
 
     def check_item(self, item: dict = _item):
-        res = requests.patch(self.link+item["id"]+"/?reserve="+item["amount"])
+        res = requests.patch(
+            self.inventory_link+item["id"]+"/?reserve="+item["amount"])
         if res.status_code == 200:
             return res.json()
         else:
-            raise Exception(str(res.status_code))
+            raise Exception(str(res.status_code)+" "+str(res.json))
 
-    def notify(self, topic: str = "cons1", text: str = "new order"):
+    async def notify(self, text: str = "new order"):
         msg_dict = {"text": text}
         loop = asyncio.get_event_loop()
-        loop.run_in_executor(None, requests.post, self.notification_link+topic, data=msg_dict)
+        # requests.post(self.notification_link, json=msg_dict)
+        
+        await loop.run_in_executor(None, lambda:
+                                   requests.post(self.notification_link,
+                                                 json=msg_dict))
         # await "result"

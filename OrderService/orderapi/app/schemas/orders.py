@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import List
 from pydantic import BaseModel
 from bson.objectid import ObjectId
-from .productItems import ProductItemsCreateSchema, ProductItemsBaseSchema
+from .productItems import ProductItemsBaseSchema
 
 #        OrderSchemas
 

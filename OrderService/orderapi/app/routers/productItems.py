@@ -53,7 +53,7 @@ def update_product(productItemsId: str, payload: schemas.ProductItemsUpdate):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                             detail=f"Invalid id: {productItemsId}")
     updated_productItem = ProductItems.find_one_and_update(
-        {'id': ObjectId(productItemsId)}, 
+{'id': ObjectId(productItemsId)}, 
         {'$set': payload.dict(exclude_none=True)}, 
         return_document=ReturnDocument.AFTER)
     if not updated_productItem:
