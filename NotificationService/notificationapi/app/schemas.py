@@ -1,19 +1,19 @@
 from pydantic import BaseModel, StrictStr
 from datetime import datetime
+from typing import List
 
 
-class MessageBaseMdoel(BaseModel):
+class MessageBaseModel(BaseModel):
     text: StrictStr
-    message_id: StrictStr | None = " "
     topic: StrictStr | None = None
     timestamp: datetime | None = None
 
 
 class MessageResponse(BaseModel):
     status: StrictStr
-    message: MessageBaseMdoel | None = None
+    message: MessageBaseModel | None = None
 
 
 class MessageResponseList(BaseModel):
     status: StrictStr
-    message: StrictStr | None = None
+    messages: List[MessageBaseModel] | None = None
